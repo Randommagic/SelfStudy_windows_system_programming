@@ -8,18 +8,20 @@ int _tmain(int argc, TCHAR *argv[]) {
     };
     PROCESS_INFORMATION pi;
     DWORD state;
-
+    TCHAR title[] = _T("return & exit");
     si.cb = sizeof(si);
-    si.dwFlags = STARTF_USEPOSITION || STARTF_USESIZE;
+    si.dwFlags = STARTF_USEPOSITION | STARTF_USESIZE;
     si.dwX = 100;
     si.dwY = 200;
     si.dwXSize = 300;
     si.dwYSize = 200;
-    si.lpTitle = _T("return & exit");
+    si.lpTitle = title;
 
     TCHAR command[] = _T("OperationStateChild.exe");
+
     // CREATE_NEW_CONSOLE 대신 0 사용.
-    CreateProcess(NULL, command, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
+    CreateProcess(NULL, command, NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL,
+                  NULL, &si, &pi);
 
     WaitForSingleObject(pi.hProcess, INFINITE);
 
@@ -29,6 +31,6 @@ int _tmain(int argc, TCHAR *argv[]) {
     else
         _tprintf(_T("state : %d \n\n"), state);
     CloseHandle(pi.hProcess);
-
+    CloseHandle(pi.hThread);
     return 0;
 }
