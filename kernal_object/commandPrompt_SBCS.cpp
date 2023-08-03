@@ -78,22 +78,19 @@ int CmdProcessing(int tokenNum) {
         // cmdStringWithOptions is not wchar, so using createProcessA instead of
         // createProcess createProcessA requires STARTUPINFOA instead of
         // STARTUPINFO
-        isRun = CreateProcessA(NULL, cmdStringWithOptions, NULL, NULL, TRUE,
-                               CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi);
+        isRun = CreateProcessA(NULL, cmdStringWithOptions, NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi);
 
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
     } else if (!strcmp(cmdTokenList[0], "echo")) {
         for (int i = 1; i < tokenNum; i++)
             sprintf(optString, "%s %s", optString, cmdTokenList[i]);
-        printf("echo message : %s", optString);
+        printf("echo message : %s \n", optString);
     } else {
         strcpy(cmdStringWithOptions, cmdTokenList[0]);
         for (int i = 1; i < tokenNum; i++)
-            sprintf(cmdStringWithOptions, "%s %s", cmdStringWithOptions,
-                    cmdTokenList[i]);
-        isRun = CreateProcessA(NULL, cmdStringWithOptions, NULL, NULL, TRUE, 0,
-                               NULL, NULL, &si, &pi);
+            sprintf(cmdStringWithOptions, "%s %s", cmdStringWithOptions, cmdTokenList[i]);
+        isRun = CreateProcessA(NULL, cmdStringWithOptions, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
 
