@@ -6,12 +6,11 @@
 int CommToClient(HANDLE);
 
 int _tmain(int argc, TCHAR *argv[]) {
-    LPTSTR pipeName = _T("\\\\.\\pipe\\simple_pipe");
     HANDLE hPipe;
 
     while (1) {
-        hPipe = CreateNamedPipe(pipeName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, BUF_SIZE,
-                                BUF_SIZE, 20000, NULL);
+        hPipe = CreateNamedPipe(_T("\\\\.\\pipe\\simple_pipe"), PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+                                PIPE_UNLIMITED_INSTANCES, BUF_SIZE, BUF_SIZE, 20000, NULL);
         if (hPipe == INVALID_HANDLE_VALUE) {
             _tprintf(_T("CreatePipe failed"));
             return -1;
@@ -19,8 +18,11 @@ int _tmain(int argc, TCHAR *argv[]) {
         BOOL isSuccess = 0;
         isSuccess = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
-        if (isSuccess)
+        if (isSuccess) {
+            _tprintf(_T("Conn success\n"));
             CommToClient(hPipe);
+        }
+
         else
             CloseHandle(hPipe);
     }
@@ -37,7 +39,7 @@ int CommToClient(HANDLE hPipe) {
     isSuccess = ReadFile(hPipe, fileName, MAX_PATH * sizeof(TCHAR), &fileNameSize, NULL);
 
     if (!isSuccess || fileNameSize == 0) {
-        _tprintf(_T("pipe read message failed"));
+        _tprintf(_T("pipe read message error!  "));
         return -1;
     }
 
